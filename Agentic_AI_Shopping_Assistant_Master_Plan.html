@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Agentic AI Shopping Assistant - Master Project Plan</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:1100px;margin:40px auto;line-height:1.6;padding:20px}
+h1,h2,h3{color:#1f4e79}
+code,pre{background:#f4f4f4;padding:2px 4px;border-radius:4px}
+.section{margin-bottom:30px}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid #ddd;padding:8px}
+</style>
+</head>
+<body>
+<h1>Agentic AI Shopping Assistant - Master Project Plan</h1>
+
+<h2>Project Goal</h2>
+<p>Build a production-inspired, category-agnostic AI shopping agent demonstrating Agentic AI, RAG, hybrid retrieval, knowledge graphs, recommendations, memory, explainability, and provider abstraction.</p>
+
+<h2>Core User Journey</h2>
+<ul>
+<li>Search products using natural language</li>
+<li>Apply conversational filters</li>
+<li>Compare products</li>
+<li>Analyze reviews</li>
+<li>Receive personalized recommendations</li>
+<li>Ask follow-up and explanation questions</li>
+</ul>
+
+<h2>Architecture</h2>
+<pre>
+Frontend (Next.js)
+        |
+        v
+FastAPI Backend
+        |
+        v
+Agent Orchestrator
+        |
+----------------------------------------------------
+| Planner | Search | Review | Compare | Memory |
+----------------------------------------------------
+        |
+----------------------------------------------------
+| PostgreSQL | Elasticsearch | Pinecone | Neo4j |
+----------------------------------------------------
+</pre>
+
+<h2>Technology Stack</h2>
+<table>
+<tr><th>Layer</th><th>Technology</th></tr>
+<tr><td>Frontend</td><td>Next.js</td></tr>
+<tr><td>Backend</td><td>FastAPI</td></tr>
+<tr><td>Agents</td><td>LangGraph</td></tr>
+<tr><td>Database</td><td>PostgreSQL</td></tr>
+<tr><td>Search</td><td>Elasticsearch</td></tr>
+<tr><td>Vector DB</td><td>Pinecone</td></tr>
+<tr><td>Knowledge Graph</td><td>Neo4j</td></tr>
+<tr><td>Cache</td><td>Redis</td></tr>
+<tr><td>Observability</td><td>LangSmith</td></tr>
+</table>
+
+<h2>Provider Abstraction</h2>
+<pre>
+LLM_PROVIDER=groq
+LLM_MODEL=llama-3.3-70b-versatile
+
+EMBEDDING_PROVIDER=voyage
+EMBEDDING_MODEL=voyage-large-2
+
+VECTOR_DB=pinecone
+SEARCH_ENGINE=elasticsearch
+GRAPH_DB=neo4j
+CACHE_PROVIDER=redis
+</pre>
+
+<p>Create factories for:</p>
+<ul>
+<li>LLMFactory</li>
+<li>EmbeddingFactory</li>
+<li>VectorDBFactory</li>
+<li>SearchFactory</li>
+<li>GraphFactory</li>
+<li>MemoryFactory</li>
+</ul>
+
+<h2>Phase 1 - Project Setup</h2>
+<ul>
+<li>Repository structure</li>
+<li>Poetry/uv</li>
+<li>Docker</li>
+<li>Configuration management</li>
+<li>Logging</li>
+<li>CI/CD</li>
+<li>Pre-commit hooks</li>
+</ul>
+
+<h2>Phase 2 - Database Design</h2>
+<ul>
+<li>Products</li>
+<li>Product Attributes</li>
+<li>Categories</li>
+<li>Brands</li>
+<li>Reviews</li>
+<li>User Preferences</li>
+<li>Search History</li>
+<li>Sessions</li>
+</ul>
+
+<h2>Phase 3 - Universal Product Schema</h2>
+<pre>
+{
+  "product_id":"",
+  "title":"",
+  "brand":"",
+  "category":"",
+  "subcategory":"",
+  "price":"",
+  "rating":"",
+  "description":"",
+  "attributes":{}
+}
+</pre>
+
+<h3>Supported MVP Categories</h3>
+<ul>
+<li>Laptops</li>
+<li>Shoes</li>
+<li>Smartphones</li>
+</ul>
+
+<h2>Phase 4 - Data Ingestion Pipeline</h2>
+<pre>
+CSV/XLSX/API
+      |
+      v
+Validation
+      |
+      v
+Cleaning
+      |
+      v
+Normalization
+      |
+      v
+Metadata Extraction
+      |
+      v
+Embedding Generation
+      |
+      v
+Knowledge Graph Build
+      |
+      v
+Storage
+</pre>
+
+<h2>Phase 5 - Elasticsearch</h2>
+<ul>
+<li>BM25 Search</li>
+<li>Faceted Search</li>
+<li>Metadata Filtering</li>
+<li>Sorting</li>
+<li>Synonyms</li>
+</ul>
+
+<h2>Phase 6 - Pinecone</h2>
+<ul>
+<li>Semantic product embeddings</li>
+<li>Metadata filtering</li>
+<li>Namespaces</li>
+<li>Batch upserts</li>
+</ul>
+
+<h2>Phase 7 - Neo4j Knowledge Graph</h2>
+<pre>
+(Product)-[:BELONGS_TO]->(Category)
+(Product)-[:MADE_BY]->(Brand)
+(Product)-[:HAS_ATTRIBUTE]->(Attribute)
+(Product)-[:USED_FOR]->(UseCase)
+(Product)-[:SIMILAR_TO]->(Product)
+(User)-[:PREFERS]->(Brand)
+</pre>
+
+<h2>Phase 8 - Agent Architecture</h2>
+<ul>
+<li>Planner Agent</li>
+<li>Search Agent</li>
+<li>Filter Agent</li>
+<li>Review Agent</li>
+<li>Recommendation Agent</li>
+<li>Compare Agent</li>
+<li>Explain Agent</li>
+<li>Memory Agent</li>
+</ul>
+
+<h2>Phase 9 - Hybrid Retrieval</h2>
+<pre>
+Final Score =
+30% Semantic
+25% BM25
+20% Metadata
+15% Knowledge Graph
+10% Personalization
+</pre>
+
+<h2>Phase 10 - Reviews</h2>
+<ul>
+<li>Sentiment analysis</li>
+<li>Pros/cons extraction</li>
+<li>Complaint mining</li>
+<li>Review summarization</li>
+</ul>
+
+<h2>Phase 11 - Personalization</h2>
+<ul>
+<li>User preferences</li>
+<li>Brand affinity</li>
+<li>Budget learning</li>
+<li>Category preferences</li>
+</ul>
+
+<h2>Phase 12 - APIs</h2>
+<ul>
+<li>/search</li>
+<li>/compare</li>
+<li>/recommend</li>
+<li>/explain</li>
+<li>/reviews</li>
+<li>/memory</li>
+</ul>
+
+<h2>Phase 13 - Frontend</h2>
+<ul>
+<li>Chat interface</li>
+<li>Search page</li>
+<li>Product page</li>
+<li>Comparison page</li>
+<li>Profile page</li>
+</ul>
+
+<h2>Phase 14 - Observability</h2>
+<ul>
+<li>LangSmith tracing</li>
+<li>Metrics</li>
+<li>Latency monitoring</li>
+<li>Error tracking</li>
+</ul>
+
+<h2>Phase 15 - Testing</h2>
+<ul>
+<li>Unit tests</li>
+<li>Integration tests</li>
+<li>Agent tests</li>
+<li>E2E tests</li>
+</ul>
+
+<h2>Phase 16 - Deployment</h2>
+<ul>
+<li>Docker</li>
+<li>Docker Compose</li>
+<li>Environment management</li>
+</ul>
+
+<h2>Phase 17 - Stretch Goals</h2>
+<ul>
+<li>Image similarity search</li>
+<li>Visual shopping</li>
+<li>Web fallback search</li>
+<li>Price tracking</li>
+<li>Bundle recommendation</li>
+<li>Shopping cart agent</li>
+</ul>
+
+<h2>Skills Demonstrated</h2>
+<p>Agentic AI, RAG, hybrid retrieval, knowledge graphs, recommendation systems, explainable AI, personalization, vector databases, and production architecture.</p>
+
+</body>
+</html>
