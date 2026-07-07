@@ -32,6 +32,8 @@ class Settings(BaseSettings):
     graph_db: str = "neo4j"
     cache_provider: str = "redis"
 
+    database_url: str = ""
+
 
 @lru_cache
 def get_settings() -> Settings:

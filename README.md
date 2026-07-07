@@ -1,300 +1,340 @@
 # 🛒 Agentic AI Shopping Assistant
 
-A production-inspired, category-agnostic **Agentic AI Shopping Assistant** built to explore and implement modern AI system design patterns, including **Agentic AI**, **Hybrid Retrieval**, **Knowledge Graphs**, **Recommendation Systems**, and **Multi-Agent Orchestration**.
+A production-inspired, category-agnostic **Agentic AI Shopping
+Assistant** that demonstrates how modern e-commerce AI systems can be
+designed using **Agentic AI, Hybrid Search, Knowledge Graphs,
+Recommendation Systems, and Provider Abstraction**.
 
-The goal of this project is not to build another chatbot, but to design and implement a scalable shopping intelligence platform similar to next-generation AI shopping assistants.
+> **Goal:** Build a portfolio-quality project that mirrors the
+> architecture used by large-scale commerce platforms rather than a
+> simple chatbot.
 
----
+------------------------------------------------------------------------
 
-## 🚀 Project Vision
+# ✨ Features
 
-Build an AI shopping agent capable of:
+-   Natural language product search
+-   Multi-agent orchestration
+-   Hybrid retrieval (BM25 + Semantic Search)
+-   Product comparison
+-   Explainable recommendations
+-   Conversational shopping assistant
+-   User preference memory
+-   Knowledge graph reasoning
+-   Swappable AI providers (LLMs, Embeddings, Vector DBs)
 
-* Understanding natural language shopping queries
-* Searching products across multiple categories
-* Applying conversational filters
-* Performing hybrid retrieval
-* Comparing products
-* Analyzing customer reviews
-* Generating explainable recommendations
-* Learning user preferences over time
-* Leveraging knowledge graphs for reasoning
-* Supporting multiple LLM providers through provider abstraction
+------------------------------------------------------------------------
 
-### Example
+# 🏗 High-Level Architecture
 
-**User:**
-
-> Find a lightweight laptop for machine learning under $1500 with at least 32GB RAM.
-
-**Follow-up:**
-
-> Compare the top two options and explain which one is better for travel.
-
----
-
-## 🏗️ Architecture Overview
-
-```text
-                    Frontend (Next.js)
-                            |
-                            v
-                     FastAPI Backend
-                            |
-                            v
-                    Agent Orchestrator
-                            |
-        ------------------------------------------------
-        |           |          |          |            |
-        v           v          v          v            v
-     Planner     Search     Review    Compare      Memory
-      Agent       Agent      Agent      Agent       Agent
-                            |
-                            v
-        ------------------------------------------------
-        | PostgreSQL | Elasticsearch | Pinecone | Neo4j |
-        ------------------------------------------------
+``` text
+                CSV / Excel / Supplier APIs
+                         │
+                         ▼
+                Data Ingestion Pipeline
+                         │
+                         ▼
+          Validation & Normalization Layer
+                         │
+                         ▼
+             PostgreSQL (Source of Truth)
+                         │
+      ┌──────────────────┼──────────────────┐
+      ▼                  ▼                  ▼
+ Elasticsearch        Pinecone           Neo4j
+ Keyword Search    Semantic Search   Knowledge Graph
+      └──────────────────┼──────────────────┘
+                         ▼
+               Hybrid Retrieval Engine
+                         ▼
+                 Agent Orchestrator
+       ┌─────────┬──────────┬──────────┬─────────┐
+       ▼         ▼          ▼          ▼
+    Planner   Search     Compare    Memory
+                         ▼
+                  Final AI Response
 ```
 
----
+------------------------------------------------------------------------
 
-## ✨ Core Features
+# 🔄 End-to-End Data Flow
 
-### 🤖 Agentic AI
+``` text
+CSV / Excel / API
+      │
+      ▼
+Load Data
+      │
+      ▼
+Validate Schema
+      │
+      ▼
+Normalize Products
+      │
+      ▼
+Store in PostgreSQL
+      │
+      ├── Build Search Document
+      ├── Build Metadata
+      ├── Generate Embeddings
+      ├── Index into Elasticsearch
+      ├── Store Vectors in Pinecone
+      └── Create Relationships in Neo4j
+```
 
-* Multi-agent orchestration
-* Tool calling
-* Planning and reasoning
-* Explainable responses
+------------------------------------------------------------------------
 
-### 🔎 Search
+# 🔍 Search Flow
 
-* BM25 retrieval
-* Semantic retrieval
-* Metadata filtering
-* Hybrid ranking
+``` text
+User Query
+      │
+      ▼
+Planner Agent
+      │
+      ▼
+Hybrid Retrieval
+ ├───────────────┐
+ ▼               ▼
+BM25         Semantic Search
+ ▼               ▼
+Elastic      Pinecone
+      │
+      ▼
+Result Fusion
+      │
+      ▼
+Metadata Filtering
+      │
+      ▼
+LLM Ranking
+      │
+      ▼
+Response Generation
+```
 
-### 🕸️ Knowledge Graph
+------------------------------------------------------------------------
 
-* Product relationships
-* Brand relationships
-* Similar products
-* User preference graph
+# 🗄 Data Architecture
 
-### 🎯 Recommendation Engine
+PostgreSQL acts as the **source of truth**.
 
-* Personalized recommendations
-* Explainable ranking
-* Review-aware recommendations
+``` text
+Brand
+ │
+Category
+ │
+Product
+ ├── ProductAttribute
+ ├── ProductImage
+ ├── ProductVariant
+ └── ProductReview
+```
 
-### 🧠 Memory
+Specialized systems:
 
-* User preferences
-* Search history
-* Session memory
+-   PostgreSQL → transactional data
+-   Elasticsearch → keyword search
+-   Pinecone → semantic retrieval
+-   Neo4j → relationship reasoning
 
----
+------------------------------------------------------------------------
 
-## 🛠️ Technology Stack
+# 🔌 Provider Abstraction
 
-| Layer            | Technology             |
-| ---------------- | ---------------------- |
-| Backend          | FastAPI                |
-| Agent Framework  | LangGraph              |
-| Database         | PostgreSQL             |
-| Search Engine    | Elasticsearch          |
-| Vector Database  | Pinecone               |
-| Knowledge Graph  | Neo4j                  |
-| Cache            | Redis                  |
-| Embeddings       | BAAI/bge-large-en-v1.5 |
-| Frontend         | Next.js                |
-| Observability    | LangSmith              |
-| Containerization | Docker                 |
+Everything is configurable through environment variables.
 
----
-
-## 🔌 Provider Abstraction
-
-The system is designed around provider abstraction, allowing components to be swapped without changing application logic.
-
-### LLM Providers
-
-Planned support:
-
-* Groq
-* OpenAI
-* Ollama
-* OpenRouter
-* Local models
-
-Example:
-
-```env
+``` env
 LLM_PROVIDER=groq
 LLM_MODEL=llama-3.3-70b-versatile
-```
 
-### Embedding Providers
+EMBEDDING_PROVIDER=jina
+EMBEDDING_MODEL=jina-embeddings-v3
 
-Current implementation:
-
-```env
-EMBEDDING_PROVIDER=local
-EMBEDDING_MODEL=BAAI/bge-large-en-v1.5
-```
-
-### Vector Database
-
-```env
 VECTOR_DB=pinecone
+SEARCH_ENGINE=elasticsearch
+GRAPH_DB=neo4j
 ```
 
----
+Planned providers
 
-## 📁 Project Structure
+### LLM
 
-```text
-agentic-shopping-assistant/
+-   Groq
+-   OpenAI
+-   Ollama
+-   OpenRouter
 
-├── backend/
-│
-│   ├── app/
-│   │   ├── agents/
-│   │   ├── api/
-│   │   ├── core/
-│   │   │   ├── config/
-│   │   │   ├── logging/
-│   │   │   ├── exceptions/
-│   │   │   └── constants/
-│   │   │
-│   │   ├── providers/
-│   │   │   ├── llm/
-│   │   │   ├── embeddings/
-│   │   │   ├── vector_db/
-│   │   │   ├── search/
-│   │   │   ├── graph/
-│   │   │   └── memory/
-│   │   │
-│   │   ├── database/
-│   │   ├── ingestion/
-│   │   ├── retrieval/
-│   │   ├── ranking/
-│   │   ├── schemas/
-│   │   ├── services/
-│   │   └── utils/
-│   │
-│   ├── tests/
-│   └── docker/
-│
-├── frontend/
-├── docs/
-├── data/
-└── scripts/
+### Embeddings
+
+-   Jina AI ✅
+-   OpenAI
+-   Voyage AI
+
+### Vector DB
+
+-   Pinecone
+
+------------------------------------------------------------------------
+
+# 🛠 Technology Stack
+
+  Layer              Technology
+  ------------------ ----------------
+  Backend            FastAPI
+  ORM                SQLAlchemy 2.x
+  Database           PostgreSQL
+  Migrations         Alembic
+  Search             Elasticsearch
+  Vector DB          Pinecone
+  Knowledge Graph    Neo4j
+  Cache              Redis
+  Embeddings         Jina AI
+  LLM                Groq
+  Agent Framework    LangGraph
+  Frontend           Next.js
+  Observability      LangSmith
+  Containerization   Docker
+
+------------------------------------------------------------------------
+
+# 📁 Project Structure
+
+``` text
+backend/
+└── app/
+    ├── agents/
+    ├── api/
+    ├── core/
+    │   ├── config/
+    │   ├── exceptions/
+    │   └── logging/
+    ├── db/
+    ├── ingestion/
+    ├── providers/
+    │   ├── embeddings/
+    │   ├── llm/
+    │   ├── vector_db/
+    │   ├── search/
+    │   └── graph/
+    ├── schemas/
+    └── services/
 ```
 
----
+------------------------------------------------------------------------
 
-## ✅ Current Progress
+# 🚀 Development Roadmap
 
-### Foundation Layer
+## Phase 1 --- Foundation
 
-* [x] Repository structure
-* [x] FastAPI setup
-* [x] Environment configuration
-* [x] Settings management
-* [x] Structured logging
-* [x] Request middleware logging
-* [x] Exception handling
-* [x] Provider abstraction architecture design
+-   [x] FastAPI
+-   [x] Configuration management
+-   [x] Structured logging
+-   [x] Request middleware
+-   [x] Exception handling
+-   [x] API router architecture
+-   [x] Provider abstraction
+-   [x] Embedding provider architecture
+-   [x] Jina embedding provider
 
-### In Progress
+## Phase 2 --- Data Layer
 
-* [ ] Embedding provider factory
-* [ ] LLM provider factory
-* [ ] Vector DB provider factory
-* [ ] Search provider factory
-* [ ] Graph provider factory
-* [ ] Memory provider factory
+-   [ ] PostgreSQL
+-   [ ] SQLAlchemy models
+-   [ ] Alembic
+-   [ ] Product schema
+-   [ ] Brand schema
+-   [ ] Category schema
+-   [ ] Product attributes
+-   [ ] Product variants
 
----
+## Phase 3 --- Ingestion
 
-## 🗺️ Development Roadmap
+-   [ ] CSV loader
+-   [ ] Excel loader
+-   [ ] Validation
+-   [ ] Normalization
+-   [ ] Search document builder
+-   [ ] Metadata builder
+-   [ ] Embedding pipeline
 
-### Phase 1
+## Phase 4 --- Retrieval
 
-* Project setup
-* Configuration management
-* Provider abstraction layer
+-   [ ] Elasticsearch
+-   [ ] Pinecone
+-   [ ] Hybrid retrieval
+-   [ ] Ranking
 
-### Phase 2
+## Phase 5 --- Knowledge Graph
 
-* Database design
-* Product schema engine
+-   [ ] Neo4j
+-   [ ] Product relationships
+-   [ ] Recommendation graph
 
-### Phase 3
+## Phase 6 --- Agentic AI
 
-* Data ingestion pipeline
+-   [ ] Planner Agent
+-   [ ] Search Agent
+-   [ ] Compare Agent
+-   [ ] Review Agent
+-   [ ] Memory Agent
+-   [ ] Agent Orchestrator
 
-### Phase 4
+## Phase 7 --- Frontend & Deployment
 
-* Elasticsearch integration
+-   [ ] Next.js
+-   [ ] Docker
+-   [ ] CI/CD
+-   [ ] Monitoring
 
-### Phase 5
+------------------------------------------------------------------------
 
-* Pinecone integration
+# 📈 Current Progress
 
-### Phase 6
+## Completed
 
-* Neo4j knowledge graph
+-   FastAPI backend
+-   Environment configuration
+-   Structured logging
+-   Global exception handling
+-   API router architecture
+-   Embedding abstraction
+-   Registry pattern
+-   Factory pattern
+-   Config-driven providers
+-   Jina embedding integration
 
-### Phase 7
+## Next
 
-* Hybrid retrieval
+-   PostgreSQL integration
+-   Product schema
+-   Ingestion pipeline
+-   Pinecone
+-   Elasticsearch
+-   Neo4j
 
-### Phase 8
+------------------------------------------------------------------------
 
-* Agent framework
+# 🎓 Learning Objectives
 
-### Phase 9
+This project provides hands-on experience with:
 
-* Recommendation engine
+-   Agentic AI
+-   Multi-agent systems
+-   Production RAG
+-   Hybrid search
+-   Semantic retrieval
+-   Knowledge graphs
+-   Recommendation systems
+-   PostgreSQL
+-   Elasticsearch
+-   Pinecone
+-   Neo4j
+-   AI system architecture
+-   Production backend engineering
 
-### Phase 10
+------------------------------------------------------------------------
 
-* Frontend
+# 📄 License
 
-### Phase 11
-
-* Deployment
-
----
-
-## 🎓 Learning Objectives
-
-This project is designed to provide hands-on experience with:
-
-* Agentic AI
-* Multi-agent systems
-* Retrieval-Augmented Generation (RAG)
-* Hybrid search architectures
-* Knowledge graphs
-* Recommendation systems
-* Vector databases
-* Search engineering
-* Explainable AI
-* Production AI architecture
-* Personalization systems
-
----
-
-## 📌 Project Status
-
-🚧 **Currently under active development.**
-
-The project is being built incrementally using production-inspired software engineering and AI architecture practices.
-
----
-
-## 📄 License
-
-This project is currently being developed for educational, research, and portfolio purposes.
+Educational, research, and portfolio project.
