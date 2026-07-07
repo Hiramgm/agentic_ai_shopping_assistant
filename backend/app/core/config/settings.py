@@ -22,6 +22,10 @@ class Settings(BaseSettings):
 
     embedding_provider: str = "local"
     embedding_model: str = "BAAI/bge-large-en-v1.5"
+    jina_api_key: str = ""
+
+    embedding_timeout: int = 60
+    embedding_max_retries: int = 3
 
     vector_db: str = "pinecone"
     search_engine: str = "elasticsearch"

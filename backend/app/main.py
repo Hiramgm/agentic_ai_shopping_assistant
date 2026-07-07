@@ -1,61 +1,64 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+
+from app.api.routers import (
+    health,
+    embeddings,
+)
 
 from app.core.config.settings import settings
 from app.core.logging.logger import (
     setup_logging,
     get_logger,
 )
+
 from app.core.logging.middleware import (
     LoggingMiddleware,
 )
+
 from app.core.exceptions.handlers import (
     application_exception,
 )
 
-# Initialize logging
 setup_logging()
 
 logger = get_logger(__name__)
 
-# Create FastAPI app
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    logger.info(
+        "application_started",
+        environment=settings.env,
+    )
+
+    yield
+
+    logger.info("application_stopped")
+
+
 app = FastAPI(
-    title=settings.app_name
+    title=settings.app_name,
+    lifespan=lifespan,
 )
 
-# Add middleware HERE
 app.add_middleware(
     LoggingMiddleware
 )
 
-# Add exception handler
 app.add_exception_handler(
     Exception,
     application_exception,
 )
 
+app.include_router(
+    health.router,
+    prefix="/api/v1"
+)
 
-@app.on_event("startup")
-async def startup():
-    logger.info(
-        "application_started",
-        environment=settings.env,
-        llm=settings.llm_provider,
-        embedding=settings.embedding_model,
-    )
-
-
-@app.get("/")
-def root():
-    logger.info("root_called")
-    return {
-        "message": "Agentic Shopping Assistant"
-    }
-
-
-@app.get("/health")
-def health():
-    logger.info("health_check")
-    return {
-        "status": "healthy",
-        "environment": settings.env,
-    }
+app.include_router(
+    embeddings.router,
+    prefix="/api/v1"
+)
